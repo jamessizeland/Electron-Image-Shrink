@@ -1,0 +1,17 @@
+{
+  "name": "Electron-Image-Shrink",
+  "version": "1.0.0",
+  "description": "image shrinker",
+  "main": "main.js",
+  "repository": "https://github.com/jamessizeland/Electron-Image-Shrink.git",
+  "author": "James Sizeland <jamessizeland@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "nodemon --exec electron ."
+  },
+  "devDependencies": {
+    "electron": "^11.0.3",
+    "nodemon": "^2.0.6"
+  }
+}
