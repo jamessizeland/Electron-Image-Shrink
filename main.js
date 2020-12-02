@@ -2,7 +2,7 @@
 Setup
 ********************************************/
 // initialize required packages
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
 
 // set environment
 process.env.NODE_ENV = "development"; //shows our environment, we can set this explicitly
@@ -26,8 +26,10 @@ function createMainWindow() {
 
 app.on("ready", () => {
   createMainWindow();
+
   const mainMenu = Menu.buildFromTemplate(menu);
   Menu.setApplicationMenu(mainMenu);
+  globalShortcut.register("CmdOrCtrl+R", () => mainWindow.reload());
   mainWindow.on("closed", () => (mainWindow = null)); //garbage collect when closed
 });
 
@@ -36,7 +38,13 @@ const menu = [
   ...(isMac ? [{ role: "appMenu" }] : []),
   {
     label: "File",
-    submenu: [{ label: "Quit", click: () => app.quit() }],
+    submenu: [
+      {
+        label: "Quit",
+        accelerator: "CmdOrCtrl+W", //global cross-platform quit shortcut
+        click: () => app.quit(),
+      },
+    ],
   },
 ];
 
