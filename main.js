@@ -10,10 +10,12 @@ const isDev = process.env.NODE_ENV !== "production";
 console.log(process.platform);
 const isMac = process.platform === "darwin";
 
-let mainWindow;
+// initialize window variables
+let mainWindow, aboutWindow;
 
+/********************************************/
+// configure windows https://www.electronjs.org/docs/api/browser-window
 function createMainWindow() {
-  // https://www.electronjs.org/docs/api/browser-window
   mainWindow = new BrowserWindow({
     title: "ImageShrink",
     width: 500,
@@ -24,6 +26,18 @@ function createMainWindow() {
   });
   mainWindow.loadFile("./app/index.html");
 }
+function createAboutWindow() {
+  aboutWindow = new BrowserWindow({
+    title: "About ImageShrink",
+    width: 300,
+    height: 300,
+    icon: `${__dirname}/assets/Icon_256x256.png`,
+    resizable: false,
+    backgroundColor: "white",
+  });
+  aboutWindow.loadFile("./app/about.html");
+}
+/********************************************/
 
 app.on("ready", () => {
   // create main application window
@@ -34,10 +48,12 @@ app.on("ready", () => {
   Menu.setApplicationMenu(mainMenu);
 
   // create global keyboard shortcuts https://www.electronjs.org/docs/api/accelerator
+  /* NOTE disabled as we get this functionality from the developer menu roles instead
   globalShortcut.register("CmdOrCtrl+R", () => mainWindow.reload());
   globalShortcut.register(isMac ? "Command+Alt+I" : "Ctrl+Shift+I", () =>
     mainWindow.toggleDevTools()
   );
+  */
 
   // garbage collect when closed
   mainWindow.on("closed", () => (mainWindow = null));
