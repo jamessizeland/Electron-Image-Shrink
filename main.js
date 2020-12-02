@@ -25,15 +25,24 @@ function createMainWindow() {
 }
 
 app.on("ready", () => {
+  // create main application window
   createMainWindow();
 
+  // create file menu
   const mainMenu = Menu.buildFromTemplate(menu);
   Menu.setApplicationMenu(mainMenu);
+
+  // create global keyboard shortcuts
   globalShortcut.register("CmdOrCtrl+R", () => mainWindow.reload());
-  mainWindow.on("closed", () => (mainWindow = null)); //garbage collect when closed
+  globalShortcut.register(isMac ? "Command+Alt+I" : "Ctrl+Shift+I", () =>
+    mainWindow.toggleDevTools()
+  );
+
+  // garbage collect when closed
+  mainWindow.on("closed", () => (mainWindow = null));
 });
 
-//Menu Template
+// Menu Template
 const menu = [
   ...(isMac ? [{ role: "appMenu" }] : []),
   {
