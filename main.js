@@ -20,6 +20,7 @@ function createMainWindow() {
     height: 600,
     icon: `${__dirname}/assets/Icon_256x256.png`,
     resizable: isDev,
+    backgroundColor: "white",
   });
   mainWindow.loadFile("./app/index.html");
 }
@@ -32,7 +33,7 @@ app.on("ready", () => {
   const mainMenu = Menu.buildFromTemplate(menu);
   Menu.setApplicationMenu(mainMenu);
 
-  // create global keyboard shortcuts
+  // create global keyboard shortcuts https://www.electronjs.org/docs/api/accelerator
   globalShortcut.register("CmdOrCtrl+R", () => mainWindow.reload());
   globalShortcut.register(isMac ? "Command+Alt+I" : "Ctrl+Shift+I", () =>
     mainWindow.toggleDevTools()
@@ -42,19 +43,25 @@ app.on("ready", () => {
   mainWindow.on("closed", () => (mainWindow = null));
 });
 
-// Menu Template
+// Menu Template https://www.electronjs.org/docs/api/menu
 const menu = [
   ...(isMac ? [{ role: "appMenu" }] : []),
   {
-    label: "File",
-    submenu: [
-      {
-        label: "Quit",
-        accelerator: "CmdOrCtrl+W", //global cross-platform quit shortcut
-        click: () => app.quit(),
-      },
-    ],
+    role: "fileMenu",
   },
+  ...(isDev
+    ? [
+        {
+          label: "Developer",
+          submenu: [
+            { role: "reload" },
+            { role: "forcereload" },
+            { type: "separator" },
+            { role: "toggledevtools" },
+          ],
+        },
+      ]
+    : []),
 ];
 
 /********************************************/
