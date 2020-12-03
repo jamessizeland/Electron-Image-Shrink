@@ -18,12 +18,18 @@ let mainWindow, aboutWindow;
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     title: "ImageShrink",
-    width: 500,
+    width: isDev ? 800 : 500,
     height: 600,
     icon: `${__dirname}/assets/Icon_256x256.png`,
     resizable: isDev,
     backgroundColor: "white",
+    webPreferences: {
+      nodeIntegration: true, //integrate node with our renderer
+    },
   });
+  if (isDev) {
+    mainWindow.webContents.openDevTools(); //automatically show devtools if in dev mode
+  }
   mainWindow.loadFile("./app/index.html");
 }
 function createAboutWindow() {
