@@ -2,7 +2,13 @@
 Setup
 ********************************************/
 // initialize required packages
-const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  globalShortcut,
+  ipcMain,
+} = require("electron");
 
 // set environment
 process.env.NODE_ENV = "development"; //shows our environment, we can set this explicitly
@@ -110,6 +116,11 @@ const menu = [
       ]
     : []),
 ];
+
+//Handle Events
+ipcMain.on("image:minimize", (event, eventData) => {
+  console.log(eventData, event);
+});
 
 /********************************************/
 //Platform specific behaviour
