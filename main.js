@@ -24,7 +24,7 @@ function createMainWindow() {
     resizable: isDev,
     backgroundColor: "white",
     webPreferences: {
-      nodeIntegration: true, //integrate node with our renderer
+      nodeIntegration: true, //enable node integration with our renderer
     },
   });
   if (isDev) {
