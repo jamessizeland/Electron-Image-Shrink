@@ -2,8 +2,8 @@
 Setup
 ********************************************/
 // initialize required packages
-const path = require("path");
-const os = require("os");
+const path = require("path"); //https://nodejs.org/api/path.html
+const os = require("os"); //https://nodejs.org/api/os.html
 const {
   app,
   BrowserWindow,
@@ -17,8 +17,8 @@ const image = {
   minJpg: require("imagemin-mozjpeg"),
   minPng: require("imagemin-pngquant"),
 };
-const slash = require("slash");
-const imagemin = require("imagemin");
+const slash = require("slash"); //https://www.npmjs.com/package/slash
+const eventLog = require("electron-log"); //https://www.npmjs.com/package/electron-log
 
 // set environment
 process.env.NODE_ENV = "development"; //shows our environment, we can set this explicitly
@@ -145,12 +145,14 @@ async function shrinkImage({ imgPath, quality, dest }) {
       ],
     });
     console.log(files);
+    eventLog.info(files);
     shell.openPath(dest); // open folderpath
 
     // return event to the renderer window
     mainWindow.webContents.send("image:done");
   } catch (err) {
     console.log(err);
+    eventLog.error(err); //record to disk
   }
 }
 
