@@ -1,5 +1,6 @@
 /********************************************
 Setup
+https://www.christianengvall.se/electron-packager-tutorial/
 ********************************************/
 // initialize required packages
 const path = require("path"); //https://nodejs.org/api/path.html
@@ -21,7 +22,7 @@ const slash = require("slash"); //https://www.npmjs.com/package/slash
 const eventLog = require("electron-log"); //https://www.npmjs.com/package/electron-log
 
 // set environment
-process.env.NODE_ENV = "development"; //shows our environment, we can set this explicitly
+process.env.NODE_ENV = "production"; //shows our environment, we can set this explicitly
 const isDev = process.env.NODE_ENV !== "production";
 console.log(process.platform);
 const isMac = process.platform === "darwin";

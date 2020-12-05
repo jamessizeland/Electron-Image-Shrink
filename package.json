@@ -1,5 +1,6 @@
 {
   "name": "Electron-Image-Shrink",
+  "packageName": "ImageShrink",
   "version": "1.0.0",
   "description": "image shrinker",
   "main": "main.js",
@@ -8,10 +9,14 @@
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "dev": "nodemon --exec electron ."
+    "dev": "nodemon --exec electron .",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/mac/icon.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . --overwrite --platform=win32 --arch=ia32 --icon=assets/win/icon.ico --prune=false --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"ImageShrink\"",
+    "package-linux": "electron-packager . electron-tutorial-app --overwrite --platform=linux --arch=x64 --icon=assets/linux/icon.png --prune=false --out=release-builds"
   },
   "devDependencies": {
     "electron": "^11.0.3",
+    "electron-packager": "^15.2.0",
     "nodemon": "^2.0.6"
   },
   "dependencies": {
