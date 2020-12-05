@@ -27,3 +27,10 @@ ui.form.addEventListener("submit", (e) => {
     quality,
   });
 });
+
+ipcRenderer.on("image:done", () => {
+  // using alert class from Materialize
+  M.toast({
+    html: `Image resized to ${ui.slider.value}% quality`,
+  });
+});
