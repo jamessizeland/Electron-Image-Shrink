@@ -145,7 +145,10 @@ async function shrinkImage({ imgPath, quality, dest }) {
       ],
     });
     console.log(files);
-    shell.openPath(dest);
+    shell.openPath(dest); // open folderpath
+
+    // return event to the renderer window
+    mainWindow.webContents.send("image:done");
   } catch (err) {
     console.log(err);
   }
