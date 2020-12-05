@@ -1,11 +1,28 @@
 /********************************************
 Setup
+https://www.christianengvall.se/electron-packager-tutorial/
 ********************************************/
 // initialize required packages
-const { app, BrowserWindow, Menu, globalShortcut } = require("electron");
+const path = require("path"); //https://nodejs.org/api/path.html
+const os = require("os"); //https://nodejs.org/api/os.html
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  globalShortcut,
+  ipcMain,
+  shell,
+} = require("electron");
+const image = {
+  min: require("imagemin"),
+  minJpg: require("imagemin-mozjpeg"),
+  minPng: require("imagemin-pngquant"),
+};
+const slash = require("slash"); //https://www.npmjs.com/package/slash
+const eventLog = require("electron-log"); //https://www.npmjs.com/package/electron-log
 
 // set environment
-process.env.NODE_ENV = "development"; //shows our environment, we can set this explicitly
+process.env.NODE_ENV = "production"; //shows our environment, we can set this explicitly
 const isDev = process.env.NODE_ENV !== "production";
 console.log(process.platform);
 const isMac = process.platform === "darwin";
@@ -18,12 +35,18 @@ let mainWindow, aboutWindow;
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     title: "ImageShrink",
-    width: 500,
+    width: isDev ? 800 : 500,
     height: 600,
     icon: `${__dirname}/assets/Icon_256x256.png`,
     resizable: isDev,
     backgroundColor: "white",
+    webPreferences: {
+      nodeIntegration: true, //enable node integration with our renderer
+    },
   });
+  if (isDev) {
+    mainWindow.webContents.openDevTools(); //automatically show devtools if in dev mode
+  }
   mainWindow.loadFile("./app/index.html");
 }
 function createAboutWindow() {
@@ -104,6 +127,35 @@ const menu = [
       ]
     : []),
 ];
+
+//Handle Events
+ipcMain.on("image:minimize", (event, eventData) => {
+  eventData.dest = path.join(os.homedir(), "imageshrink");
+  shrinkImage(eventData);
+});
+
+// https://www.npmjs.com/package/imagemin
+async function shrinkImage({ imgPath, quality, dest }) {
+  try {
+    const pngQuality = quality / 100;
+    const files = await image.min([slash(imgPath)], {
+      destination: dest,
+      plugins: [
+        image.minJpg({ quality }),
+        image.minPng({ quality: [pngQuality, pngQuality] }),
+      ],
+    });
+    console.log(files);
+    eventLog.info(files);
+    shell.openPath(dest); // open folderpath
+
+    // return event to the renderer window
+    mainWindow.webContents.send("image:done");
+  } catch (err) {
+    console.log(err);
+    eventLog.error(err); //record to disk
+  }
+}
 
 /********************************************/
 //Platform specific behaviour
