@@ -2,13 +2,23 @@
 Setup
 ********************************************/
 // initialize required packages
+const path = require("path");
+const os = require("os");
 const {
   app,
   BrowserWindow,
   Menu,
   globalShortcut,
   ipcMain,
+  shell,
 } = require("electron");
+const image = {
+  min: require("imagemin"),
+  minJpg: require("imagemin-mozjpeg"),
+  minPng: require("imagemin-pngquant"),
+};
+const slash = require("slash");
+const imagemin = require("imagemin");
 
 // set environment
 process.env.NODE_ENV = "development"; //shows our environment, we can set this explicitly
@@ -119,8 +129,27 @@ const menu = [
 
 //Handle Events
 ipcMain.on("image:minimize", (event, eventData) => {
-  console.log(eventData, event);
+  eventData.dest = path.join(os.homedir(), "imageshrink");
+  shrinkImage(eventData);
 });
+
+// https://www.npmjs.com/package/imagemin
+async function shrinkImage({ imgPath, quality, dest }) {
+  try {
+    const pngQuality = quality / 100;
+    const files = await image.min([slash(imgPath)], {
+      destination: dest,
+      plugins: [
+        image.minJpg({ quality }),
+        image.minPng({ quality: [pngQuality, pngQuality] }),
+      ],
+    });
+    console.log(files);
+    shell.openPath(dest);
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 /********************************************/
 //Platform specific behaviour
